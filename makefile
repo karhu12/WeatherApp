@@ -9,3 +9,6 @@ compile: App.java
 compilerun: App.java
 	$(COMPILE) $(LIBS) $(SOURCE).java
 	$(RUN) $(LIBS) $(SOURCE)
+
+run: App.java
+	$(RUN) $(LIBS) $(SOURCE)
