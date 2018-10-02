@@ -7,7 +7,6 @@
  * 
 */
 
-/* Internal clases */
 import networking.*;
 import ui.*;
 import data.*;
@@ -18,10 +17,7 @@ import java.io.*;
 import com.google.gson.*;
 
 public final class App {
-    public static void main(String[] args) {
-        //Ui.launchUi(args);
-        String q = API.getCurrentWeather("Oulu", "Fi");
-        JsonObject jObj = new Gson().fromJson(q, JsonObject.class);
-        System.out.println(jObj.get("main").getAsJsonObject().get("temp").getAsString());
+    public static void main(String[] args) throws Exception {
+        Ui.launchUi(args);
     }
 }

@@ -1,9 +1,7 @@
 package ui;
 
-/* Internal */
 import networking.API;
-
-/* JAVAFX */
+import data.CurrentWeather;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+/* libs */
+import com.google.gson.*;
 
 public class Ui extends Application {
     public static void launchUi(String[] args) {
@@ -34,11 +35,18 @@ public class Ui extends Application {
         Label weatherLabel = new Label();
         weatherRequest.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+                String json = API.getCurrentWeather(cityName.getText());
                 try {
-                    weatherLabel.setText(API.getCurrentWeather("Oulu", "FI"));
+                    if (API.isJsonValid(json)) {
+                        CurrentWeather weather = new Gson().fromJson(json, CurrentWeather.class);
+                        cityLabel.setText(weather.getTemperatureInfo("temp") + weather.getWeatherInfo("description"));
+                    }
+                    else {
+                        cityLabel.setText("Invalid search");
+                    }
                 }
-                catch (Exception exc) {
-                    weatherLabel.setText("Could not fetch weather");
+                catch (Exception err) {
+                    err.printStackTrace();
                 }
             }
         });
