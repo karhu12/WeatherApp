@@ -42,13 +42,13 @@ public class CurrentWeather {
         for (WeatherInfo w : this.weatherInfo) {
             switch (fieldName) {
                 case "main":
-                    returnStr += w.main;
+                    return w.main;
                 case "description":
-                    returnStr += w.description;
+                    return w.description;
                 case "icon":
-                    returnStr += w.icon;
+                    return w.icon;
                 default:
-                    returnStr += "";
+                    return "";
             }
         }
         return returnStr;

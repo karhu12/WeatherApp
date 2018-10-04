@@ -13,51 +13,89 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.geometry.*;
+import javafx.scene.text.*;
+import javafx.scene.image.*;
+import java.io.*;
 
 /* libs */
 import com.google.gson.*;
 
 public class Ui extends Application {
+
+    private BorderPane border;
+    private GridPane centerGrid;
+    private Label cityLabel;
+    private Label temperatureLabel;
+    private TextField cityName; 
+    private Button weatherRequest;
+    private ImageView weatherImageView;
+    private final String imgPath = "/home/riku/Documents/Opiskelumateriaali/V2/P1/Java/Harjoitukset/WeatherApp/images/";
+
     public static void launchUi(String[] args) {
         launch(args);
+    }
+
+    private void searchWeather() {
+        String json = API.getCurrentWeather(cityName.getText());
+        try {
+            if (API.isJsonValid(json)) {
+                CurrentWeather weather = new Gson().fromJson(json, CurrentWeather.class);
+                File file = new File(imgPath + weather.getWeatherInfo("icon") + ".png");
+                Image image = new Image(file.toURI().toString());
+                weatherImageView.setImage(image);
+                temperatureLabel.setText(String.valueOf(weather.getTemperatureInfo("temp")) + " °C");
+            }
+            else {
+
+            }
+        }
+        catch (Exception err) {
+            err.printStackTrace();
+        }
     }
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Weather Program");
-        BorderPane border = new BorderPane();
+        border = new BorderPane();
 
         /* Center grid */
-        GridPane centerGrid = new GridPane();
-        Label cityLabel = new Label("City: ");
-        TextField cityName = new TextField();
-        Button weatherRequest = new Button("Search");
-        Label weatherLabel = new Label();
+        centerGrid = new GridPane();
+        weatherImageView = new ImageView();
+        temperatureLabel = new Label("");
+        cityLabel = new Label("Search weather by City");
+        cityName = new TextField();
+        weatherRequest = new Button("Search");
+
+        cityName.setFont(new Font("Arial", 22));
+        cityLabel.setFont(new Font("Arial", 32));
+        temperatureLabel.setFont(new Font("Arial", 32));
+        weatherRequest.setFont(new Font("Arial", 22));
+
         weatherRequest.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                String json = API.getCurrentWeather(cityName.getText());
-                try {
-                    if (API.isJsonValid(json)) {
-                        CurrentWeather weather = new Gson().fromJson(json, CurrentWeather.class);
-                        cityLabel.setText(weather.getTemperatureInfo("temp") + weather.getWeatherInfo("description"));
-                    }
-                    else {
-                        cityLabel.setText("Invalid search");
-                    }
-                }
-                catch (Exception err) {
-                    err.printStackTrace();
-                }
+                searchWeather();
             }
         });
-        centerGrid.add(cityLabel,1,0);
-        centerGrid.add(cityName,2,0);
-        centerGrid.add(weatherRequest,3,0);
-        centerGrid.add(weatherLabel,1,1);
-        border.setCenter(centerGrid);
+
+        
+        centerGrid.add(cityLabel,0,0);
+        centerGrid.add(cityName,0,1);
+        centerGrid.add(weatherRequest,0,2);
+        centerGrid.add(weatherImageView,0,3);
+        centerGrid.add(temperatureLabel,1,3);
+
+        centerGrid.setHalignment(cityLabel, HPos.CENTER);
+        centerGrid.setHalignment(weatherRequest, HPos.CENTER);
+        centerGrid.setAlignment(Pos.CENTER);
+        centerGrid.setVgap(15);
+
+        border.setTop(centerGrid);
+        border.setMargin(centerGrid, new Insets(12,12,12,12));
 
         /* Show */
-        primaryStage.setScene(new Scene(border, 1080, 720));
+        primaryStage.setScene(new Scene(border, 640, 320));
         primaryStage.show();
     }
 }
