@@ -44,6 +44,7 @@ public class Ui extends Application {
     private Label temperatureLabel;
     private Label requestCityLabel;
     private Label descriptionLabel;
+    private Label humidityLabel;
     private Label windLabel;
     private ImageView weatherImageView;
 
@@ -70,13 +71,16 @@ public class Ui extends Application {
                 requestCityLabel.setText(weather.getCityName());
                 weatherImageView.setImage(image);
                 temperatureLabel.setText(String.valueOf(weather.getTemperatureInfo("temp")) + " °C");
-                windLabel.setText(String.valueOf("Wind " + weather.getWindInfo("speed")) + "m/s to " + CurrentWeather.degToDir(weather.getWindInfo("deg")));
+                windLabel.setText("Wind " + String.valueOf(weather.getWindInfo("speed")) + "m/s to " + CurrentWeather.degToDir(weather.getWindInfo("deg")));
+                humidityLabel.setText("Humidity " + String.valueOf(weather.getTemperatureInfo("humidity")) + "%");
             }
             else {
                 requestCityLabel.setText("Search failed...");
                 descriptionLabel.setText("");
                 weatherImageView.imageProperty().set(null);
                 temperatureLabel.setText("");
+                windLabel.setText("");
+                humidityLabel.setText("");
             }
         }
         catch (Exception err) {
@@ -105,7 +109,7 @@ public class Ui extends Application {
         header.setAlignment(Pos.CENTER);
 
         /* Border Left */
-        cityLabel = new Label("City name");
+        cityLabel = new Label("City");
         countryCodeLabel = new Label("Country code");
         cityName = new TextField();
         countryCodeName = new TextField();
@@ -139,10 +143,13 @@ public class Ui extends Application {
         temperatureLabel = new Label("");
         descriptionLabel = new Label("");
         requestCityLabel = new Label("");
+        humidityLabel = new Label("");
         windLabel = new Label("");
         temperatureLabel.setFont(new Font("Arial", 32));
-        requestCityLabel.setFont(new Font("Arial", 28));
-        descriptionLabel.setFont(new Font("Arial", 22));
+        requestCityLabel.setFont(new Font("Arial", 32));
+        descriptionLabel.setFont(new Font("Arial", 24));
+        windLabel.setFont(new Font("Arial", 18));
+        humidityLabel.setFont(new Font("Arial", 18));
         weatherImageView.setFitWidth(80);
         weatherImageView.setFitHeight(80);
 
@@ -151,13 +158,14 @@ public class Ui extends Application {
         centerGrid.add(weatherImageView, 0, 2);
         centerGrid.add(temperatureLabel, 1, 2);
         centerGrid.add(windLabel, 1, 3);
+        centerGrid.add(humidityLabel, 1, 4);
         centerGrid.setAlignment(Pos.CENTER);
 
         /* Border */
         border.setCenter(centerGrid);
         border.setLeft(leftGrid);
         border.setTop(header);
-        border.setMargin(leftGrid, new Insets(12,12,12,12));
+        border.setMargin(leftGrid, new Insets(12,12,12,24));
     
         /* Show */
         primaryStage.setScene(new Scene(border, 640, 320));
